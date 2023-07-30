@@ -1,7 +1,6 @@
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.util.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -10,11 +9,14 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
+import java.io.IOException;
+
 import static org.openqa.selenium.Keys.ENTER;
 
-public class test_WebDriver {
+public class Test_WebDriver {
     private WebDriver driver = null;
-    private Logger logger = LogManager.getLogger(test_WebDriver.class);
+    private Logger logger = LogManager.getLogger(Test_WebDriver.class);
+
 
     @BeforeAll
     public static void webDriverSutup(){
@@ -66,23 +68,17 @@ public class test_WebDriver {
         driver.findElement(photo).click();
         WebElement element = driver.findElement(photo);
 
-
-//        if(element.isDisplayed()) {
-//            System.out.println("Photo is open -  " +element.isDisplayed());
-//        }
-//        else {
-//            System.out.println("Photo is not open - " +element.isDisplayed());
-//        }
         Assertions.assertTrue(element.isDisplayed());
 
     }
+
     @Test
 
-    public void otusCookie() {
+    public void otusCookie() throws IOException {
+
+        System.getProperties().load(ClassLoader.getSystemResourceAsStream("prop.properties"));
 
 
-        final String LOG = "vadir56921@iturchia.com";
-        final String PASS = "!QAZ3edc";
         final String URL_OTUS = "https://otus.ru";
 
         ChromeOptions options = new ChromeOptions();
@@ -90,11 +86,16 @@ public class test_WebDriver {
         driver = new ChromeDriver(options);
 
         driver.get(URL_OTUS);
-        //driver.manage().deleteAllCookies();
+
 
         driver.findElement(By.cssSelector(".sc-mrx253-0")).click();
-        driver.findElement(By.cssSelector("[name='email']")).sendKeys(LOG);
-        driver.findElement(By.cssSelector("[type='password']")).sendKeys(PASS, ENTER);
+
+
+        driver.findElement(By.cssSelector("[name='email']")).sendKeys(System.getProperty("login"));
+
+        driver.findElement(By.cssSelector("[type='password']")).sendKeys(System.getProperty("password"), ENTER);
+
         logger.info(driver.manage().getCookies());
+
     }
 }
